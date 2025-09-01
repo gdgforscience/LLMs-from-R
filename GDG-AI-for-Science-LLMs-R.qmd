@@ -1,0 +1,334 @@
+---
+title: '**Using Large Language Models (LLMs) from R **'
+format: html
+---
+
+**Workshop Goal:** This workshop will introduce the use of Large Language Models (LLMs) directly within your R environment. We will explore three packages from the tidyverse/mlverse ecosystem: [`ellmer`](https://ellmer.tidyverse.org/) for direct interaction with LLMs, [`ragnar`](https://ragnar.tidyverse.org) for building Retrieval-Augmented Generation (RAG) workflows, and [`chattr`](https://mlverse.github.io/chattr/) for RStudio context integration.
+
+**Prerequisites:**
+
+-   Basic knowledge of R and the RStudio IDE.
+
+## **Installation and Setup**
+
+-   Install the [`ellmer`](https://ellmer.tidyverse.org/),[`ragnar`](https://ragnar.tidyverse.org), and [`chattr`](https://mlverse.github.io/chattr/) package from CRAN as below. This takes about 1 hour in a Kaggle/Colab notebook for some reason. In a local RStudio it is far less tardy. 
+
+```{r}
+#new_libs <- file.path(getwd(), "Rlibs")
+#if (!dir.exists(new_libs)) {dir.create(new_libs)}
+#install.packages(c("ellmer","ragnar","chattr"), lib="./Rlibs")
+```
+
+-   Set up API keys from https://aistudio.google.com/ or equivalent.
+-   *Optional* - Setup local LLM with Ollama
+    -   Download [Ollama](https://ollama.com/download) and install it
+    -   Pull a local model: `ollama pull gemma3:270m-it-qat`
+    -   See [Gemma with Ollama](https://ai.google.dev/gemma/docs/integrations/ollama) docs for more info. 
+
+# **Module 1: Introduction to `ellmer` - Your gateway to LLMs in R**
+
+[`ellmer`](https://ellmer.tidyverse.org/) is an R package that allows you to interface with LLMs from different providers. It offers a unified interface for sending prompts, receiving responses, and features like tool/function calling and structured data extraction.
+
+## **Kaey Concepts:**
+
+-   **Chat Objects:** Learn how to create and manage chat objects, which maintain the context of your conversation with the LLM. 
+-   **LLM Providers:** Explore how to connect to different LLM providers like Google Gemini.
+-   **Prompts and context:** Understand the basics what the LLM knows and what your enviornment can see.
+
+
+### Your First Chat
+
+These code snippets will guide you through the basics of the `ellmer` package. Always start by loading the ellmer package. And setting an API key.
+
+```{r}
+library(ellmer, lib.loc = "./Rlibs")
+#Sys.setenv(GEMINI_API_KEY = "xxxx")
+```
+
+```{r}
+# ---
+# Example 1.1: Generating R Code for a Statistical Test
+# ---
+# Scenario: You're writing a script for your analysis and need to perform a
+# post-hoc test after a Kruskal-Wallis test, but you can't remember the exact
+# function or its arguments.
+# Create your first chat object. An ellmer chat-object maintains the conversation's state/context.
+# We'll use the gemini 2.0 flash model as it's fast and cost-effective.
+code_helper_chat <- chat_google_gemini(
+  model = "gemini-2.0-flash", 
+  api_key=Sys.getenv("GEMINI_API_KEY")
+  )
+# Note: you don't strictly have to set api_key if the GEMINI_API_KEY (or similar per provider) is set in this exact format.
+
+# Now, ask your question using the `$chat()` method.
+code_helper_chat$chat("I have a data frame in R called 'plant_data' with a numeric column 'height' and a factor 'treatment_group'. I just ran a Kruskal-Wallis test and it was significant. How do I perform a pairwise Wilcoxon test as a post-hoc analysis, adjusting p-values for multiple comparisons using the Holm method?")
+```
+The LLM *should* provide you with the R code and an explanation. This is much faster than searching through documentation or web forums. But note, asking questions does not send your R-environment's context/variables/histroy/etc to the LLM.
+
+### Chat with a System Prompt
+
+```{r}
+# ---
+# Example 1.2: Brainstorming Experimental Design
+# ---
+# Scenario: You are a cell biologist designing a new in-vitro experiment to test the effect of three different drug compounds on cancer cell viability. 
+# You want to make sure your design is robust.
+# We can use a "system prompt" to tell the LLM to adopt a specific persona.
+# This guides its responses to be more focused and relevant.
+biostat_chat <- chat_google_gemini(
+  model = "gemini-2.5-pro", 
+  system_prompt = "You are a helpful and experienced biostatistician. Your goal is to provide clear, practical advice on experimental design for biomedical researchers. Do not write R code unless explicitly asked.", 
+  api_key=Sys.getenv("GEMINI_API_KEY")
+  )
+
+biostat_chat$chat("I am planning an experiment to test three new drug compounds (A, B, C) against a vehicle control on a human colon cancer cell line (HT-29). My primary outcome is cell viability measured by an MTS assay at 48 hours. What are the key things I need to consider for my experimental design to ensure the results are robust and publishable? Specifically, what are some potential confounding variables and how can I control for them?")
+```
+By providing the system prompt you can closer tweak the model to your use-case.
+
+### Chat with a turn-memory (context history)
+
+```{r}
+# ---
+# Example 1.3: Translating Code from Python to R
+# ---
+# Scenario: A collaborator sent you a Python script that does a crucial data cleaning step, but your entire workflow is in R.
+# Let's create a new, clean chat object for this task.
+translator_chat <- chat_google_gemini(model = "gemini-2.0-flash", api_key=Sys.getenv("GEMINI_API_KEY"))
+
+# You can have a multi-turn conversation. First, provide the Python code.
+translator_chat$chat("Translate the following Python pandas code into R using dplyr.
+  import pandas as pd
+  df = pd.DataFrame({ 
+    'subject_id': [1, 2, 3, 4, 5, 6], 
+    'age': [25, 45, 12, 67, 25, 33], 
+    'biomarker_level': [1.2, 2.5, 0.8, 3.1, 1.5, 4.2],
+    'group': ['control', 'treatment', 'control', 'treatment', 'control', 'treatment']
+  })
+  
+  # Filter for subjects older than 18 with biomarker levels above 1.0
+  filtered_df = df[(df['age'] > 18) & (df['biomarker_level'] > 1.0)]
+  
+  # Calculate the mean biomarker level for each group
+  summary_df = filtered_df.groupby('group')['biomarker_level'].mean().reset_index()
+  print(summary_df)
+  ")
+```
+The chat object remembers the previous turn, so you can ask follow-up questions.
+```{r}
+# For example, let's ask it to add another step.
+translator_chat$chat("Good. Now, modify the R code to also arrange the final summary output in descending order of the mean biomarker level?")
+```
+By using the same `translator_chat` object it will send the full context every time ([as per design in ellmer](https://ellmer.tidyverse.org/reference/Chat.html).)
+
+### Chat returning structured data
+
+```{r}
+# ---
+# Example 1.4: Structured Data Extraction from Scientific Text
+# ---
+# Scenario: You are conducting a mini-literature review and need to quickly pull key information from dozens of abstracts. Doing this manually is slow and error-prone. 
+# We can tell the LLM to return the data in a structured R object.
+# Step 1: Define the structure of the data you want to extract.
+# We use the `type_object()` function to define a schema.
+abstract_schema <- type_object(
+  study_organism = type_string("The primary organism or cell line studied."),
+  sample_size = type_integer("The total number of subjects or primary samples used."),
+  statistical_test = type_string("The main statistical test mentioned in the abstract."),
+  key_finding = type_string("A one-sentence summary of the main conclusion."))
+
+# Step 2: Create a chat object configured to use this schema.
+# The `response` argument tells ellmer to expect a structured response.
+extractor_chat <- chat_google_gemini(
+  model = "gemini-2.5-flash",
+  system_prompt = "Extract the requested information from the following abstract.",
+  api_key=Sys.getenv("GEMINI_API_KEY")
+  )
+
+# Step 3: Provide the unstructured text (our sample abstract).
+abstract_text <- "The role of gene XYZ in cellular metabolism was investigated in the murine model.Using a cohort of 60 male C57BL/6J mice (30 wild-type, 30 knockout for gene XYZ),we measured serum glucose levels following a 6-hour fast. A two-sample t-testrevealed significantly higher glucose levels in the knockout group (p < 0.001)compared to wild-type controls. These results strongly suggest that gene XYZplays a critical role in maintaining glucose homeostasis."
+
+# Use the $chat_structured() method to send your input to your chat object and request structured output
+structured_response <- extractor_chat$chat_structured(
+  abstract_text,
+  type = abstract_schema
+  )
+
+# The result is a clean, structured R list!
+print(structured_response)
+
+# You can easily access the elements
+cat("Study Organism:", structured_response$study_organism, "\n")
+cat("Sample Size:", structured_response$sample_size, "\n")
+cat("Key Finding:", structured_response$key_finding, "\n")
+```
+Imagine running this in a loop over hundreds of abstracts - a huge time saver! Read more about [ellmer's structured data](https://ellmer.tidyverse.org/articles/structured-data.html).
+
+## Module 1 Conclusion
+You've now learned the core functionalities of `ellmer`.You can:
+* Connect to LLMs securely from R.
+* Use LLMs as assistants for coding, debugging, and brainstorming.
+* Leverage system prompts to get more tailored responses.
+* Automate data extraction from unstructured text.
+In the next module, we will explore `ragnar` to make the LLM even more powerful by allowing it to access your own specific documents.
+
+# **Module 2: Powering your LLMs with `ragnar` - Retrieval-Augmented Generation (RAG)**
+[`ragnar`](https://ragnar.tidyverse.org) is an R package designed for building Retrieval-Augmented Generation (RAG) workflows. RAG is a technique that enhances LLM performance by providing it with relevant information from your own trusted data sources, reducing hallucinations and improving the accuracy of responses.
+
+## **Key Concepts:**
+* **Knowledge Store:** Understand the concept of a knowledge store and how to create one using your own documents.
+* **Document Processing and Chunking:** Learn to process different document types (e.g., markdown, text files) and and strategies for splitting them into manageable chunks.
+* **Embeddings and Vector Search:** Discover how embeddings are used to represent text numerically and how vector search helps find relevant information.
+* **Retrieval and Augmentation:** Learn how `ragnar` retrieves relevant chunks from your knowledge store and augments your LLM prompts.
+
+
+### Load the ellmer and ragnar packages
+```{r}
+library(ragnar, lib.loc = "./Rlibs")
+library(ellmer, lib.loc = "./Rlibs")
+# Set your Gemini API key value
+# Sys.setenv(GEMINI_API_KEY = "xxxx")
+```
+
+### Build the knowledge store
+
+```{r}
+# Scenario: We will act as a researcher in a lab. We have several Standard
+# Operating Procedures (SOPs) as text files. We want to build a "Lab Assistant"
+# chatbot that can answer questions specifically about our lab's protocols.
+# This is the core of RAG. We will process our documents and store them
+# in a special database that is optimized for searching.
+# Step 1: Define the location for our store and the embedding function
+# The store is a duckdb database file.
+# The `embed` function is used to convert text chunks into numerical vectors.
+store_location <- file.path("./lab_protocol_store.duckdb")
+
+# To avoid re-creating the store every time, you can add a check
+if (file.exists(store_location)) {  
+  file.remove(store_location)
+  }
+
+store <- ragnar_store_create(
+  store_location,
+  embed = \(x) embed_google_gemini(x, model = "gemini-embedding-001", api_key = Sys.getenv("GEMINI_API_KEY"))
+)
+
+# Step 2: Ingest the documents
+# We'll read each document, split it into chunks, and insert it into the store.
+# `ragnar` handles the embedding process automatically during insertion.
+# The SOPs are just text files in a local directory.
+sop_dir <- file.path("./lab_sops")
+sop_files <- list.files(sop_dir, full.names = TRUE)
+
+for (file_path in sop_files) {
+  message("Ingesting: ", basename(file_path))
+  chunks <- file_path |> read_as_markdown() |> markdown_chunk()
+  ragnar_store_insert(store, chunks)
+}
+
+# Step 3: Build the search index
+# This step is crucial for enabling fast and efficient searching of our documents.
+ragnar_store_build_index(store)
+
+cat("\nKnowledge store has been built successfully at:", store_location, "\n")
+```
+
+Here we read in all our (markdown) documents, we "chunk" them into some kind of contextual tokens (usually sections, paragraphs, sentences, etc), we then convert the chunks into a numerical representation based on how this "embedding model" links semanticly similar tokens/chunks. See the docs for more info:
+* [`markdown_chunk()`](https://ragnar.tidyverse.org/reference/markdown_chunk.html)
+* [`gemini-embedding-001`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings#supported-models)
+
+This is a one-time computational cost to build up our database, then it is much less computationally intensive to query our local database. 
+
+
+### Query the knowledge store
+
+```{r}
+# -----------------------------------------------------------------
+# Exercise 2: Retrieval and Augmentation
+# -----------------------------------------------------------------
+# Step 1: Manual Retrieval (to see what's happening under the hood)
+# Let's ask a question and see what chunks `ragnar` retrieves from our SOPs.
+query <- "How do I check my RNA for protein contamination?"
+retrieved_chunks <- ragnar_retrieve(store, query)
+
+# Print the retrieved text to see what the LLM will be given as context.
+print(retrieved_chunks$text)
+
+
+# Step 2: Creating our RAG-powered Chat Assistant
+# Now, we combine `ragnar` and `ellmer`. We'll give our `ellmer` chat object
+# a new "tool" that allows it to search our knowledge store.
+# Create an ellmer chat object with a system prompt defining its persona.
+lab_assistant_chat <- chat_google_gemini(
+  model = "gemini-2.0-flash",
+  system_prompt = "You are the 'Official Lab Assistant'. Your job is to answer questions by exclusively using the information provided from the lab's SOP documents. If the answer is not in the provided documents, you must state that the information is not available in the lab protocols. Do not use your general knowledge.",
+  api_key = Sys.getenv("GEMINI_API_KEY")
+  )
+
+# This is the magic step! Register the retrieval function as a tool.
+lab_chat <- ragnar_register_tool_retrieve(lab_assistant_chat, store)
+
+# Step 3: Ask the Lab Assistant questions!
+# Now, when you ask a question, the LLM will first use the `ragnar_retrieve` tool to search the documents, then use the retrieved text to formulate its answer.
+
+# Question 1 (Answer is in SOP-03)
+lab_chat$chat("What is a good 260/280 ratio for my RNA samples?")
+
+# Question 2 (Answer is in SOP-02)
+lab_chat$chat("How long should I block my western blot membrane, and what should I use for blocking?")
+
+# Question 3 (Answer is NOT in the SOPs)
+lab_chat$chat("What is the protocol for performing a comet assay?")
+```
+
+## Module 2 Conclusion
+Fantastic work! You have now built a complete, end-to-end RAG system.You can:
+* Create a knowledge store from your own documents (`ragnar_store_create`).
+* Ingest and chunk text documents into the store (`ragnar_store_insert`).
+* Give an `ellmer` chatbot the ability to search your private knowledge store.
+* Build a specialised chatbot that answers questions based only on your data.
+
+This workflow is incredibly powerful for creating reliable, accurate, and helpful AI assistants for any domain-specific knowledge you have. In the final module, we'll look at `chattr`, which provides a polished user interface for these kinds of interactions directly inside RStudio.
+
+# **Module 3: `chattr` - LLM Integration in R Studio**
+
+[`chattr`](https://mlverse.github.io/chattr/) provides a user-friendly interface for interacting with LLMs directly within the RStudio IDE. It offers a Shiny-based chat application and RStudio add-ins to streamline your workflow and make it easy to incorporate LLM-generated code and text into your projects.
+
+**Key Concepts:**
+* **Shiny Gadget:** Learn how to use the `chattr` Shiny gadget for interactive conversations with LLMs.
+* **RStudio Add-ins:** Discover how to use `chattr`'s RStudio add-ins to send prompts and insert LLM-generated code directly into your scripts.
+* **Contextual Awareness:** Understand how `chattr` can automatically include information about your current R environment (e.g., loaded data frames, open files) in your prompts.
+
+### Chattr in RStudio
+Load packages and set api key.
+```{r}
+library(ellmer, lib.loc = "./Rlibs")
+library(chattr, lib.loc = "./Rlibs")
+# Set your Gemini API key value
+# Sys.setenv(GEMINI_API_KEY = "xxxx")
+```
+
+```{r}
+chat <- ellmer::chat_google_gemini(
+  model = "gemini-2.5-flash", 
+  api_key=Sys.getenv("GEMINI_API_KEY")
+  )
+  
+chattr_use(chat)
+```
+
+Now call the app!
+```{r}
+# chattr_app()
+```
+```{r}
+# chattr("Make me a ggplot example")
+```
+
+
+# **Conclusion and Further Resources**
+This workshop has provided you with a solid foundation for using LLMs in R. You've learned how to:
+* Interact with various LLMs using `ellmer`.
+* Build powerful RAG workflows with `ragnar`.
+* Seamlessly integrate LLMs into your RStudio workflow with `chattr`.
+
+Now you're ready to explore the endless possibilities of using LLMs to enhance your R-based research.
