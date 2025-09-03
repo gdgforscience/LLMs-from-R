@@ -99,6 +99,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><strong>Workshop Goal:</strong> This workshop will introduce the use of Large Language Models (LLMs) directly within your R environment. We will explore three packages from the tidyverse/mlverse ecosystem: <a href="https://ellmer.tidyverse.org/"><code>ellmer</code></a> for direct interaction with LLMs, <a href="https://ragnar.tidyverse.org"><code>ragnar</code></a> for building Retrieval-Augmented Generation (RAG) workflows, and <a href="https://mlverse.github.io/chattr/"><code>chattr</code></a> for RStudio context integration.</p>
+<p>This workshop is part of the <a href="https://gdg.community.dev/gdg-ai-for-science-australia/">GDG AI for Science</a> workshop series. Join the community for talks, events, collaborations and more.</p>
 <p><strong>Prerequisites:</strong></p>
 <ul>
 <li>Basic knowledge of R and the RStudio IDE.</li>
@@ -127,8 +128,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="module-1-introduction-to-ellmer---your-gateway-to-llms-in-r" class="level1">
 <h1><strong>Module 1: Introduction to <code>ellmer</code> - Your gateway to LLMs in R</strong></h1>
 <p><a href="https://ellmer.tidyverse.org/"><code>ellmer</code></a> is an R package that allows you to interface with LLMs from different providers. It offers a unified interface for sending prompts, receiving responses, and features like tool/function calling and structured data extraction.</p>
-<section id="kaey-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="kaey-concepts"><strong>Kaey Concepts:</strong></h2>
+<section id="key-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="key-concepts"><strong>Key Concepts:</strong></h2>
 <ul>
 <li><strong>Chat Objects:</strong> Learn how to create and manage chat objects, which maintain the context of your conversation with the LLM.</li>
 <li><strong>LLM Providers:</strong> Explore how to connect to different LLM providers like Google Gemini.</li>
@@ -225,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In this small example we can pass R variables into the LLM and build new variables based on the output.</p>
 </section>
 <section id="chat-with-a-turn-memory-context-history" class="level3">
-<h3 class="anchored" data-anchor-id="chat-with-a-turn-memory-context-history">Chat with a turn-memory (context history)</h3>
+<h3 class="anchored" data-anchor-id="chat-with-a-turn-memory-context-history">Chat with a turn-memory context history</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 1.4: Translating Code from Python to R</span></span>
@@ -300,19 +301,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample Size:"</span>, structured_response<span class="sc">$</span>sample_size, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
 <span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Key Finding:"</span>, structured_response<span class="sc">$</span>key_finding, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Imagine running this in a loop over hundreds of abstracts - a huge time saver! Read more about <a href="https://ellmer.tidyverse.org/articles/structured-data.html">ellmer’s structured data</a>.</p>
+<p>Imagine running this in a loop over hundreds of abstracts - a huge time saver! Read more about <a href="https://ellmer.tidyverse.org/articles/structured-data.html">ellmer’s structured data</a> and <a href="https://ellmer.tidyverse.org/reference/type_boolean.html">type specifications</a>.</p>
 </section>
 </section>
 <section id="module-1-conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="module-1-conclusion">Module 1 Conclusion</h2>
-<p>You’ve now learned the core functionalities of <code>ellmer</code>.You can: - Connect to LLMs securely from R. - Use LLMs as assistants for coding, debugging, and brainstorming. - Leverage system prompts to get more tailored responses. - Automate data extraction from unstructured text. In the next module, we will explore <code>ragnar</code> to make the LLM even more powerful by allowing it to access your own specific documents.</p>
+<p>You’ve now learned the core functionalities of <code>ellmer</code>.You can:</p>
+<ul>
+<li>Connect to LLMs securely from R.</li>
+<li>Use LLMs as assistants for coding, debugging, and brainstorming.</li>
+<li>Leverage system prompts to get more tailored responses.</li>
+<li>Automate data extraction from unstructured text.</li>
+</ul>
+<p>In the next module, we will explore <code>ragnar</code> to make the LLM even more powerful by allowing it to access your own specific documents.</p>
 </section>
 </section>
 <section id="module-2-powering-your-llms-with-ragnar---retrieval-augmented-generation-rag" class="level1">
 <h1><strong>Module 2: Powering your LLMs with <code>ragnar</code> - Retrieval-Augmented Generation (RAG)</strong></h1>
 <p><a href="https://ragnar.tidyverse.org"><code>ragnar</code></a> is an R package designed for building Retrieval-Augmented Generation (RAG) workflows. RAG is a technique that enhances LLM performance by providing it with relevant information from your own trusted data sources, reducing hallucinations and improving the accuracy of responses.</p>
-<section id="key-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="key-concepts"><strong>Key Concepts:</strong></h2>
+<section id="key-concepts-1" class="level2">
+<h2 class="anchored" data-anchor-id="key-concepts-1"><strong>Key Concepts:</strong></h2>
 <ul>
 <li><strong>Knowledge Store:</strong> Understand the concept of a knowledge store and how to create one using your own documents.</li>
 <li><strong>Document Processing and Chunking:</strong> Learn to process different document types (e.g., markdown, text files) and and strategies for splitting them into manageable chunks.</li>
@@ -370,7 +378,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Knowledge store has been built successfully at:"</span>, store_location, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Here we read in all our (markdown) documents, we “chunk” them into some kind of contextual tokens (usually sections, paragraphs, sentences, etc), we then convert the chunks into a numerical representation based on how this “embedding model” links semanticly similar tokens/chunks. See the docs for more info: - <a href="https://ragnar.tidyverse.org/reference/markdown_chunk.html"><code>markdown_chunk()</code></a> - <a href="https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings#supported-models"><code>gemini-embedding-001</code></a></p>
+<p>Here we read in all our (markdown) documents, we “chunk” them into some kind of contextual tokens (usually sections, paragraphs, sentences, etc), we then convert the chunks into a numerical representation based on how this “embedding model” links semanticly similar tokens/chunks. See the docs for more info:</p>
+<ul>
+<li><a href="https://ragnar.tidyverse.org/reference/markdown_chunk.html"><code>markdown_chunk()</code></a></li>
+<li><a href="https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings#supported-models"><code>gemini-embedding-001</code></a></li>
+</ul>
 <p>This is a one-time computational cost to build up our database, then it is much less computationally intensive to query our local database.</p>
 </section>
 <section id="query-the-knowledge-store" class="level3">
@@ -417,14 +429,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="module-2-conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="module-2-conclusion">Module 2 Conclusion</h2>
-<p>Fantastic work! You have now built a complete, end-to-end RAG system.You can: - Create a knowledge store from your own documents (<code>ragnar_store_create</code>). - Ingest and chunk text documents into the store (<code>ragnar_store_insert</code>). - Give an <code>ellmer</code> chatbot the ability to search your private knowledge store. - Build a specialised chatbot that answers questions based only on your data.</p>
+<p>Fantastic work! You have now built a complete, end-to-end RAG system.You can:</p>
+<ul>
+<li>Create a knowledge store from your own documents (<code>ragnar_store_create</code>).</li>
+<li>Ingest and chunk text documents into the store (<code>ragnar_store_insert</code>).</li>
+<li>Give an <code>ellmer</code> chatbot the ability to search your private knowledge store.</li>
+<li>Build a specialised chatbot that answers questions based only on your data.</li>
+</ul>
 <p>This workflow is incredibly powerful for creating reliable, accurate, and helpful AI assistants for any domain-specific knowledge you have. In the final module, we’ll look at <code>chattr</code>, which provides a polished user interface for these kinds of interactions directly inside RStudio.</p>
 </section>
 </section>
 <section id="module-3-chattr---llm-integration-in-r-studio" class="level1">
 <h1><strong>Module 3: <code>chattr</code> - LLM Integration in R Studio</strong></h1>
 <p><a href="https://mlverse.github.io/chattr/"><code>chattr</code></a> provides a user-friendly interface for interacting with LLMs directly within the RStudio IDE. It offers a Shiny-based chat application and RStudio add-ins to streamline your workflow and make it easy to incorporate LLM-generated code and text into your projects.</p>
-<p><strong>Key Concepts:</strong> - <strong>Shiny Gadget:</strong> Learn how to use the <code>chattr</code> Shiny gadget for interactive conversations with LLMs. - <strong>RStudio Add-ins:</strong> Discover how to use <code>chattr</code>’s RStudio add-ins to send prompts and insert LLM-generated code directly into your scripts. - <strong>Contextual Awareness:</strong> Understand how <code>chattr</code> can automatically include information about your current R environment (e.g., loaded data frames, open files) in your prompts.</p>
+<section id="key-concepts-2" class="level2">
+<h2 class="anchored" data-anchor-id="key-concepts-2"><strong>Key Concepts:</strong></h2>
+<ul>
+<li><strong>Shiny Gadget:</strong> Learn how to use the <code>chattr</code> Shiny gadget for interactive conversations with LLMs.</li>
+<li><strong>RStudio Add-ins:</strong> Discover how to use <code>chattr</code>’s RStudio add-ins to send prompts and insert LLM-generated code directly into your scripts.</li>
+<li><strong>Contextual Awareness:</strong> Understand how <code>chattr</code> can automatically include information about your current R environment (e.g., loaded data frames, open files) in your prompts.</li>
+</ul>
 <section id="chattr-in-rstudio" class="level3">
 <h3 class="anchored" data-anchor-id="chattr-in-rstudio">Chattr in RStudio</h3>
 <p>Load packages and set api key.</p>
@@ -451,9 +475,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
+</section>
 <section id="conclusion-and-further-resources" class="level1">
 <h1><strong>Conclusion and Further Resources</strong></h1>
-<p>This workshop has provided you with a solid foundation for using LLMs in R. You’ve learned how to: - Interact with various LLMs using <code>ellmer</code>. - Build powerful RAG workflows with <code>ragnar</code>. - Seamlessly integrate LLMs into your RStudio workflow with <code>chattr</code>.</p>
+<p>This workshop has provided you with a solid foundation for using LLMs in R. You’ve learned how to:</p>
+<ul>
+<li>Interact with various LLMs using <code>ellmer</code>.</li>
+<li>Build powerful RAG workflows with <code>ragnar</code>.</li>
+<li>Seamlessly integrate LLMs into your RStudio workflow with <code>chattr</code>.</li>
+</ul>
+<p>Consider <a href="https://hauselin.github.io/ollama-r/">ollamar</a> for local LLMs.</p>
+<p>Got a library you prefer? Let us know: gdgforscience@gmail.com</p>
 <p>Now you’re ready to explore the endless possibilities of using LLMs to enhance your R-based research.</p>
 </section>
 

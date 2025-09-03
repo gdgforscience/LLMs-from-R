@@ -7,6 +7,8 @@ execute:
 
 **Workshop Goal:** This workshop will introduce the use of Large Language Models (LLMs) directly within your R environment. We will explore three packages from the tidyverse/mlverse ecosystem: [`ellmer`](https://ellmer.tidyverse.org/) for direct interaction with LLMs, [`ragnar`](https://ragnar.tidyverse.org) for building Retrieval-Augmented Generation (RAG) workflows, and [`chattr`](https://mlverse.github.io/chattr/) for RStudio context integration.
 
+This workshop is part of the [GDG AI for Science](https://gdg.community.dev/gdg-ai-for-science-australia/) workshop series. Join the community for talks, events, collaborations and more.
+
 **Prerequisites:**
 
 -   Basic knowledge of R and the RStudio IDE.
@@ -32,7 +34,7 @@ execute:
 
 [`ellmer`](https://ellmer.tidyverse.org/) is an R package that allows you to interface with LLMs from different providers. It offers a unified interface for sending prompts, receiving responses, and features like tool/function calling and structured data extraction.
 
-## **Kaey Concepts:**
+## **Key Concepts:**
 
 -   **Chat Objects:** Learn how to create and manage chat objects, which maintain the context of your conversation with the LLM. 
 -   **LLM Providers:** Explore how to connect to different LLM providers like Google Gemini.
@@ -131,7 +133,7 @@ print(sentiment_results)
 ```
 In this small example we can pass R variables into the LLM and build new variables based on the output.
 
-### Chat with a turn-memory (context history)
+### Chat with a turn-memory context history
 
 ```{r}
 # ---
@@ -207,14 +209,16 @@ cat("Study Organism:", structured_response$study_organism, "\n")
 cat("Sample Size:", structured_response$sample_size, "\n")
 cat("Key Finding:", structured_response$key_finding, "\n")
 ```
-Imagine running this in a loop over hundreds of abstracts - a huge time saver! Read more about [ellmer's structured data](https://ellmer.tidyverse.org/articles/structured-data.html).
+Imagine running this in a loop over hundreds of abstracts - a huge time saver! Read more about [ellmer's structured data](https://ellmer.tidyverse.org/articles/structured-data.html) and [type specifications](https://ellmer.tidyverse.org/reference/type_boolean.html).
 
 ## Module 1 Conclusion
 You've now learned the core functionalities of `ellmer`.You can:
--   Connect to LLMs securely from R.
--   Use LLMs as assistants for coding, debugging, and brainstorming.
--   Leverage system prompts to get more tailored responses.
--   Automate data extraction from unstructured text.
+
+- Connect to LLMs securely from R.
+- Use LLMs as assistants for coding, debugging, and brainstorming.
+- Leverage system prompts to get more tailored responses.
+- Automate data extraction from unstructured text.
+
 In the next module, we will explore `ragnar` to make the LLM even more powerful by allowing it to access your own specific documents.
 
 # **Module 2: Powering your LLMs with `ragnar` - Retrieval-Augmented Generation (RAG)**
@@ -279,6 +283,7 @@ cat("\nKnowledge store has been built successfully at:", store_location, "\n")
 ```
 
 Here we read in all our (markdown) documents, we "chunk" them into some kind of contextual tokens (usually sections, paragraphs, sentences, etc), we then convert the chunks into a numerical representation based on how this "embedding model" links semanticly similar tokens/chunks. See the docs for more info:
+
 -   [`markdown_chunk()`](https://ragnar.tidyverse.org/reference/markdown_chunk.html)
 -   [`gemini-embedding-001`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings#supported-models)
 
@@ -328,10 +333,11 @@ lab_chat$chat("What is the protocol for performing a comet assay?")
 
 ## Module 2 Conclusion
 Fantastic work! You have now built a complete, end-to-end RAG system.You can:
--   Create a knowledge store from your own documents (`ragnar_store_create`).
--   Ingest and chunk text documents into the store (`ragnar_store_insert`).
--   Give an `ellmer` chatbot the ability to search your private knowledge store.
--   Build a specialised chatbot that answers questions based only on your data.
+
+- Create a knowledge store from your own documents (`ragnar_store_create`).
+- Ingest and chunk text documents into the store (`ragnar_store_insert`).
+- Give an `ellmer` chatbot the ability to search your private knowledge store.
+- Build a specialised chatbot that answers questions based only on your data.
 
 This workflow is incredibly powerful for creating reliable, accurate, and helpful AI assistants for any domain-specific knowledge you have. In the final module, we'll look at `chattr`, which provides a polished user interface for these kinds of interactions directly inside RStudio.
 
@@ -339,10 +345,10 @@ This workflow is incredibly powerful for creating reliable, accurate, and helpfu
 
 [`chattr`](https://mlverse.github.io/chattr/) provides a user-friendly interface for interacting with LLMs directly within the RStudio IDE. It offers a Shiny-based chat application and RStudio add-ins to streamline your workflow and make it easy to incorporate LLM-generated code and text into your projects.
 
-**Key Concepts:**
--   **Shiny Gadget:** Learn how to use the `chattr` Shiny gadget for interactive conversations with LLMs.
--   **RStudio Add-ins:** Discover how to use `chattr`'s RStudio add-ins to send prompts and insert LLM-generated code directly into your scripts.
--   **Contextual Awareness:** Understand how `chattr` can automatically include information about your current R environment (e.g., loaded data frames, open files) in your prompts.
+## **Key Concepts:**
+- **Shiny Gadget:** Learn how to use the `chattr` Shiny gadget for interactive conversations with LLMs.
+- **RStudio Add-ins:** Discover how to use `chattr`'s RStudio add-ins to send prompts and insert LLM-generated code directly into your scripts.
+- **Contextual Awareness:** Understand how `chattr` can automatically include information about your current R environment (e.g., loaded data frames, open files) in your prompts.
 
 ### Chattr in RStudio
 Load packages and set api key.
@@ -373,8 +379,13 @@ Now call the app!
 
 # **Conclusion and Further Resources**
 This workshop has provided you with a solid foundation for using LLMs in R. You've learned how to:
--   Interact with various LLMs using `ellmer`.
--   Build powerful RAG workflows with `ragnar`.
--   Seamlessly integrate LLMs into your RStudio workflow with `chattr`.
+
+- Interact with various LLMs using `ellmer`.
+- Build powerful RAG workflows with `ragnar`.
+- Seamlessly integrate LLMs into your RStudio workflow with `chattr`.
+
+Consider [ollamar](https://hauselin.github.io/ollama-r/) for local LLMs.
+
+Got a library you prefer? Let us know: gdgforscience@gmail.com
 
 Now you're ready to explore the endless possibilities of using LLMs to enhance your R-based research.
