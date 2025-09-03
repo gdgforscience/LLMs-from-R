@@ -5,13 +5,16 @@ execute:
   output: false
 ---
 
-**Workshop Goal:** This workshop will introduce the use of Large Language Models (LLMs) directly within your R environment. We will explore three packages from the tidyverse/mlverse ecosystem: [`ellmer`](https://ellmer.tidyverse.org/) for direct interaction with LLMs, [`ragnar`](https://ragnar.tidyverse.org) for building Retrieval-Augmented Generation (RAG) workflows, and [`chattr`](https://mlverse.github.io/chattr/) for RStudio context integration.
-
-This workshop is part of the [GDG AI for Science](https://gdg.community.dev/gdg-ai-for-science-australia/) workshop series. Join the community for talks, events, collaborations and more.
+This workshop will introduce the use of Large Language Models (LLMs) directly within your R environment. We will explore three packages from the tidyverse/mlverse ecosystem: [`ellmer`](https://ellmer.tidyverse.org/) for direct interaction with LLMs, [`ragnar`](https://ragnar.tidyverse.org) for building Retrieval-Augmented Generation (RAG) workflows, and [`chattr`](https://mlverse.github.io/chattr/) for RStudio context integration.
 
 **Prerequisites:**
 
 -   Basic knowledge of R and the RStudio IDE.
+
+[![ ](./aiforsci.png)](https://gdg.community.dev/gdg-ai-for-science-australia/)
+
+This workshop is part of the [GDG AI for Science](https://gdg.community.dev/gdg-ai-for-science-australia/) workshop series. Join the community for talks, events, collaborations and more.
+
 
 ## **Installation and Setup**
 
@@ -21,10 +24,12 @@ This workshop is part of the [GDG AI for Science](https://gdg.community.dev/gdg-
 #new_libs <- file.path(getwd(), "Rlibs")
 #if (!dir.exists(new_libs)) {dir.create(new_libs)}
 #install.packages(c("ellmer","ragnar","chattr"), lib="./Rlibs")
-#Sys.setenv(GEMINI_API_KEY = "xxxx")
 ```
 
 -   Set up API keys from https://aistudio.google.com/ or equivalent.
+```{r}
+#Sys.setenv(GEMINI_API_KEY = "xxxx")
+```
 -   *Optional* - Setup local LLM with Ollama
     -   Download [Ollama](https://ollama.com/download) and install it
     -   Pull a local model: `ollama pull gemma3:270m-it-qat`
@@ -388,4 +393,4 @@ Consider [ollamar](https://hauselin.github.io/ollama-r/) for local LLMs.
 
 Got a library you prefer? Let us know: gdgforscience@gmail.com
 
-Now you're ready to explore the endless possibilities of using LLMs to enhance your R-based research.
+Now you're ready to explore using LLMs to enhance your R-based research.
