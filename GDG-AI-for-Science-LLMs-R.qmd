@@ -1,6 +1,7 @@
 ---
 title: '**Using Large Language Models (LLMs) from R **'
 format: html
+page-layout: full
 execute: 
   output: false
 ---
@@ -243,6 +244,10 @@ library(ellmer, lib.loc = "./Rlibs")
 # Set your Gemini API key value
 # Sys.setenv(GEMINI_API_KEY = "xxxx")
 ```
+
+### Download some example "documents"
+
+Grab a few markdown files from [here](https://github.com/gdgforscience/LLMs-from-R/raw/refs/heads/main/lab_sops.zip). Unzip the three `*.md` files and point to the directory below. These are in markdown format so follow a nice natural context for chunking/tokenizing. If your documents are in different formats, you may have to use different chunking strategies.
 
 ### Build the knowledge store
 
