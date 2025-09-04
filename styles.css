@@ -1,0 +1,10 @@
+#quarto-document-content {
+  /* This sets the maximum width of the main content block */
+  /*max-width: 100%;*/
+  grid-column: screen-start;
+  /* This forces the block to align to the left */
+  margin-left: 50px;
+
+  /* This keeps the right margin flexible */
+  margin-right: auto;
+}

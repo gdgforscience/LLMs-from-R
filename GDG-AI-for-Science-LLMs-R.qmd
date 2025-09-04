@@ -7,7 +7,7 @@ execute:
   output: false
 ---
 
-This workshop will introduce the use of Large Language Models (LLMs) directly within your R environment. We will explore three packages from the tidyverse/mlverse ecosystem: [`ellmer`](https://ellmer.tidyverse.org/) for direct interaction with LLMs, [`ragnar`](https://ragnar.tidyverse.org) for building Retrieval-Augmented Generation (RAG) workflows, and [`chattr`](https://mlverse.github.io/chattr/) for RStudio context integration.
+This workshop will introduce the use of Large Language Models (LLMs) directly within your R environment. We will explore three packages from the tidyverse/mlverse ecosystem: [`ellmer`](https://ellmer.tidyverse.org/) for direct interaction with LLMs, [`ragnar`](https://ragnar.tidyverse.org) for building Retrieval-Augmented Generation (RAG) workflows, and [`chattr`](https://mlverse.github.io/chattr/) for RStudio context integration. 
 
 **Prerequisites:**
 
