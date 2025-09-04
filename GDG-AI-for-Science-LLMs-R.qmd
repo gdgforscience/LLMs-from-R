@@ -1,7 +1,8 @@
 ---
 title: '**Using Large Language Models (LLMs) from R **'
-format: html
-page-layout: full
+format: 
+  html: 
+    css: styles.css
 execute: 
   output: false
 ---
