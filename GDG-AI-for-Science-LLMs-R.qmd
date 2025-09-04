@@ -1,8 +1,8 @@
 ---
 title: '**Using Large Language Models (LLMs) from R **'
-format: 
-  html: 
-    css: styles.css
+format:
+  html:
+    code-overflow: wrap
 execute: 
   output: false
 ---
@@ -20,7 +20,7 @@ This workshop is part of the [GDG AI for Science](https://gdg.community.dev/gdg-
 
 ## **Installation and Setup**
 
--   Install the [`ellmer`](https://ellmer.tidyverse.org/),[`ragnar`](https://ragnar.tidyverse.org), and [`chattr`](https://mlverse.github.io/chattr/) package from CRAN as below. This takes about 1 hour in a Kaggle/Colab notebook for some reason. In a local RStudio it is far less tardy. 
+-   Install the [`ellmer`](https://ellmer.tidyverse.org/),[`ragnar`](https://ragnar.tidyverse.org), and [`chattr`](https://mlverse.github.io/chattr/) package from CRAN as below. *ragnar* may take up to about 1 hour to install. 
 
 ```{r}
 #new_libs <- file.path(getwd(), "Rlibs")
